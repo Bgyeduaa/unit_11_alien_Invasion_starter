@@ -24,8 +24,7 @@ class AlienInvasion:
 
         self.ship = Ship(self)
 
-
-    def run_game(self):
+    def run_game(self) -> None:
         # Game loop
         while self.running:
             self._check_events()
@@ -33,12 +32,12 @@ class AlienInvasion:
             self._update_screen()
             self.clock.tick(self.settings.FPS)
 
-    def _update_screen(self):
+    def _update_screen(self) ->None:
         self.screen.blit(self.bg, (0,0))
         self.ship.draw()
         pygame.display.flip()
 
-    def _check_events(self):
+    def _check_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
