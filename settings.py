@@ -9,7 +9,7 @@ class Settings:
         self.bg_file = Path.cwd() / "Assets"/ "images" / "Starbasesnow.png"
 
         self.ship_file = Path.cwd() / "Assets" / "images" / "ship2_no_bg_removebg.png"
-        self.ship_w = 40
+        self.ship_w = 40 
         self.ship_h = 60
         self.ship_speed = 5
 
@@ -23,7 +23,7 @@ class Settings:
         self.alien_file = Path.cwd() / "Assets" / "images" / "enemy_4.png"
         self.alien_w = 40
         self.alien_h = 40
-        self.fleet_speed = 5
+        self.fleet_speed = 2
 
 
 
