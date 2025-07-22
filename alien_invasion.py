@@ -38,9 +38,9 @@ class AlienInvasion:
         while self.running:
             self._check_events()
             self.ship.update()
-            # self.alien.update()
+            self.alien_fleet.update_fleet()
             self._update_screen()
-            self.clock.tick(self.settings.FPS)
+            self.clock.tick(self.settings.FPS) 
 
     def _update_screen(self) ->None:
         self.screen.blit(self.bg, (0,0))
