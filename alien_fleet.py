@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from alien_invasion import AlienInvasion
-    
-class AlienFleet:
 
+class AlienFleet:
     def __init__(self, game: "AlienInvasion") -> None:
         self.game = game
         self.settings = game.settings
@@ -22,38 +21,34 @@ class AlienFleet:
         screen_w = self.settings.screen_w
         screen_h = self.settings.screen_h
 
-
         fleet_w, fleet_h = self.calculate_fleet_size(alien_w, screen_w, alien_h, screen_h)
-        x_offset, y_offset = self.calculate_offsets(alien_w, alien_h, screen_w, fleet_w, fleet_h)
+        x_offset, y_offset = self.calculate_offsets(alien_w, alien_h, screen_w, screen_h, fleet_w, fleet_h)
 
-        self._create_arrow_fleet(alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset)
+        self._create_rectangle_fleet(alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset)
 
-    def _create_arrow_fleet(self, alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset):
-        mid_col = fleet_w // 2
-
+    # --- Rectangle formation (full grid) ---
+    def _create_rectangle_fleet(self, alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset) -> None:
         for row in range(fleet_h):
             for col in range(fleet_w):
                 current_x = alien_w * col + x_offset
                 current_y = alien_h * row + y_offset
-                if col == mid_col - row or col == mid_col + row:
-                    self._create_alien(current_x, current_y)
-                elif row == fleet_h - 1 and abs(col - mid_col) <= row // 2:
-                    self._create_alien(current_x, current_y)
+                self._create_alien(current_x, current_y)
 
-    def calculate_offsets(self, alien_w, alien_h, screen_w, fleet_w, fleet_h):
-        half_screen = self.settings.screen_h//2
+    # Center the rectangle horizontally; place vertically centered in the top half
+    def calculate_offsets(self, alien_w, alien_h, screen_w, screen_h, fleet_w, fleet_h) -> tuple[int, int]:
         fleet_horizontal_space = fleet_w * alien_w
         fleet_vertical_space = fleet_h * alien_h
-        x_offset = int((screen_w - fleet_horizontal_space)//2)
-        y_offset = int((half_screen - fleet_vertical_space)//2)
-        return x_offset,y_offset
 
+        x_offset = int((screen_w - fleet_horizontal_space) // 2)
+        y_offset = int(((screen_h // 2) - fleet_vertical_space) // 2)
+        return x_offset, y_offset
 
+    # Fit as many aliens as possible into a centered grid in the top half
+    def calculate_fleet_size(self, alien_w, screen_w, alien_h, screen_h) -> tuple[int, int]:
+        fleet_w = screen_w // alien_w
+        fleet_h = (screen_h // 2) // alien_h
 
-    def calculate_fleet_size(self, alien_w, screen_w, alien_h, screen_h)-> tuple[int, int]:
-        fleet_w = (screen_w//alien_w)
-        fleet_h = ((screen_h/2)//alien_h)
-
+        # shave a column/row or two to keep margins and symmetry
         if fleet_w % 2 == 0:
             fleet_w -= 1
         else:
@@ -64,16 +59,15 @@ class AlienFleet:
         else:
             fleet_h -= 2
 
+        fleet_w = max(fleet_w, 1)
+        fleet_h = max(fleet_h, 1)
         return int(fleet_w), int(fleet_h)
 
-
-    def _create_alien(self, current_x: int, current_y:int) -> None:
+    def _create_alien(self, current_x: int, current_y: int) -> None:
         new_alien = Alien(self, current_x, current_y)
-
         self.fleet.add(new_alien)
 
     def _check_fleet_edges(self) -> None:
-        alien: Alien
         for alien in self.fleet:
             if alien.check_edges():
                 self._drop_alien_fleet()
@@ -88,19 +82,18 @@ class AlienFleet:
         self._check_fleet_edges()
         self.fleet.update()
 
-    def draw(self) ->None:
-        alien: "Alien"
+    def draw(self) -> None:
         for alien in self.fleet:
             alien.draw_alien()
 
     def check_collisions(self, other_group):
         return pygame.sprite.groupcollide(self.fleet, other_group, True, True)
-    
-    def check_fleet_bottom(self) -> None:
-        alien: Alien
+
+    def check_fleet_bottom(self) -> bool:
         for alien in self.fleet:
             if alien.rect.bottom >= self.settings.screen_h:
                 return True
         return False
-    def check_destroyed_status(self):
+
+    def check_destroyed_status(self) -> bool:
         return not self.fleet
