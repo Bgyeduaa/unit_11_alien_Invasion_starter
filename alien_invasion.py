@@ -39,7 +39,7 @@ class AlienInvasion:
         
         self.ship = Ship(self, Arsenal(self))
         self.alien_fleet = AlienFleet(self)
-        self.alien_fleet.create_fleet()
+        #self.alien_fleet.create_fleet()
 
         self.play_button = Button(self, "Play")
         self.game_active = False
