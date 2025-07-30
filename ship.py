@@ -39,7 +39,7 @@ class Ship:
         if self.moving_left and self.rect.left > self.boundaries.left:
             self.x -= temp_speed
 
-            self.rect.x = self.x
+        self.rect.x = self.x
 
     def draw(self) -> None:
         self.arsenal.draw()
