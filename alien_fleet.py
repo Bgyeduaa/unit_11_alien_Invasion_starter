@@ -12,7 +12,7 @@ class AlienFleet:
         self.fleet = pygame.sprite.Group()
         self.fleet_direction = self.settings.fleet_direction
         self.fleet_drop_speed = self.settings.fleet_drop_speed
-
+        
         self.create_fleet()
 
     def create_fleet(self) -> None:
@@ -26,12 +26,14 @@ class AlienFleet:
 
         self._create_rectangle_fleet(alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset)
 
-    # --- Rectangle formation (full grid) ---
     def _create_rectangle_fleet(self, alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset) -> None:
         for row in range(fleet_h):
             for col in range(fleet_w):
                 current_x = alien_w * col + x_offset
                 current_y = alien_h * row + y_offset
+                if col % 2 == 0 or row % 2 ==0: # modified on 8/2
+                    continue
+
                 self._create_alien(current_x, current_y)
 
     # Center the rectangle horizontally; place vertically centered in the top half
@@ -45,10 +47,9 @@ class AlienFleet:
 
     # Fit as many aliens as possible into a centered grid in the top half
     def calculate_fleet_size(self, alien_w, screen_w, alien_h, screen_h) -> tuple[int, int]:
-        fleet_w = screen_w // alien_w
-        fleet_h = (screen_h // 2) // alien_h
-
-        # shave a column/row or two to keep margins and symmetry
+        fleet_w = (screen_w // alien_w) 
+        fleet_h = ((screen_h // 2) // alien_h)
+        
         if fleet_w % 2 == 0:
             fleet_w -= 1
         else:

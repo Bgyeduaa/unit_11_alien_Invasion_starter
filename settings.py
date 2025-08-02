@@ -19,8 +19,8 @@ class Settings:
         self.impact_sound = Path.cwd() / "Assets" / "sound" / "zapsplat.mp3"
        
         self.alien_file = Path.cwd() / "Assets" / "images" / "facebloom.png"
-        self.alien_w = 40
-        self.alien_h = 40
+        self.alien_w = 35
+        self.alien_h = 35
        
         self.fleet_direction = 1
        
