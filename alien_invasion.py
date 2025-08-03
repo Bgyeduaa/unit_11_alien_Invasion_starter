@@ -1,3 +1,7 @@
+"""
+Alien Invasion - Main Game Module
+This module initializes and runs the Alien Invasion game.
+"""
 import sys
 import pygame
 from settings import Settings
@@ -10,6 +14,7 @@ from time import sleep
 from button import Button
 from hud import HUD
 
+"""AlienInvasion class for managing all imports and their attributes"""
 class AlienInvasion:
 
     def __init__(self) -> None:
@@ -46,6 +51,8 @@ class AlienInvasion:
         self.play_button = Button(self, "Play")
         self.game_active = False
 
+    """ run_game starts the game the game loop"""
+
     def run_game(self) -> None:
         # Game loop
         while self.running:
@@ -56,6 +63,11 @@ class AlienInvasion:
                 self._check_collisions()
             self._update_screen()
             self.clock.tick(self.settings.FPS) 
+            
+    """
+    Checks collisions and updates game statistics
+    check collisions for aliens and bottom of screen
+    """
 
     def _check_collisions(self) -> None:
         #check collisions for ship
@@ -82,6 +94,8 @@ class AlienInvasion:
                 #update HUD view
                 self.HUD.update_level()
 
+    """ _check_game_status function checks the game's status and resets level"""
+
     def _check_game_status(self) -> None:
             if self.game_stats.ships_left > 0:
                 self.game_stats.ships_left -= 1
@@ -91,13 +105,14 @@ class AlienInvasion:
                 self.game_active = False
 
 
-
-
+    """ _reset_level fuction resets levels of the game"""
 
     def _reset_level(self) -> None:
         self.ship.arsenal.arsenal.empty()
         self.alien_fleet.fleet.empty()
         self.alien_fleet.create_fleet()
+
+    """ _restart_game fuction restarts the game and updates the score"""
 
     def restart_game(self):
         self.settings.initialize_dynamic_settings()
@@ -108,7 +123,9 @@ class AlienInvasion:
         self.game_active = True
         pygame.mouse.set_visible(False)
 
-    def _update_screen(self) ->None:
+    """ _update_screen updates the game screen"""
+
+    def _update_screen(self) -> None:
         self.screen.blit(self.bg, (0,0))
         self.ship.draw()
         self.alien_fleet.draw()
@@ -119,6 +136,8 @@ class AlienInvasion:
             pygame.mouse.set_visible(True)
 
         pygame.display.flip()
+
+    """_check_events fuction checks events of the game"""
 
     def _check_events(self) -> None:
         for event in pygame.event.get():
@@ -134,10 +153,14 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self._check_button_clicked()
 
+    """ _check_button_clicked fuction checks button position of the game"""
+
     def _check_button_clicked(self):
         mouse_pos = pygame.mouse.get_pos()
         if self.play_button.check_clicked(mouse_pos):
             self.restart_game()
+ 
+    """ _check_keyup_events fuction"""
 
     def _check_keyup_events(self, event) -> None:
         if event.key == pygame.K_RIGHT:
@@ -145,6 +168,8 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
     
+    """ _check_keydown_events fuction of the game"""
+
     def _check_keydown_events(self, event) -> None:
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
